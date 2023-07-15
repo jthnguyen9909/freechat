@@ -1,57 +1,82 @@
 require("dotenv").config();
-const express = require("express");
-const PORT = process.env.PORT || 3001;
 
-const { createServer } = require("http");
-const { Server } = require("socket.io");
-const path = require("path");
-
+// game functionality
 const { initGame, gameLoop, getUpdatedVelocity } = require("./utils/game");
 const { FRAME_RATE } = require("./utils/constants");
 const { makeId } = require("./utils/utils");
 
+const express = require("express");
+const path = require("path");
+const PORT = process.env.PORT || 3001;
 const app = express();
+
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+
 const httpServer = createServer(app);
+
+// const io = new Server(httpServer);
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000", // Change the cors origin to the link of deployed app when deployed
+    methods: ["GET", "POST"],
+  },
+});
+
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-const io = require("socket.io")();
-
 const state = {};
 const clientRooms = {};
 
-io.on("connection", (client) => {
-  client.on("keydown", handleKeyDown);
-  client.on("newGame", handleNewGame);
-  client.on("joinGame", handleJoinGame);
+io.on("connection", (socket) => {
+  // socket.emit("initconnect", { data: "hello world" });
 
-  client.on("test", handleTest);
+  socket.on("keydown", handleKeyDown);
+  socket.on("newGame", handleNewGame);
+  socket.on("joinGame", handleJoinGame);
+
+  socket.on("testcall", handleTest);
   function handleTest() {
-    console.log(clientRooms);
     console.log("servertest");
+    console.log(clientRooms);
   }
 
   function handleNewGame() {
     let roomName = makeId(6);
-    clientRooms[client.id] = roomName;
-    client.emit("gameCode", roomName);
+
+    clientRooms[socket.id] = roomName;
+    socket.emit("gameCode", roomName);
 
     state[roomName] = initGame();
 
-    client.join(roomName);
-    client.number = 1;
-    client.emit("init", 1);
+    socket.join(roomName);
+    socket.number = 1;
+    socket.emit("init", 1);
+    // console.log(roomName);
+    console.log(clientRooms[socket.id]);
+    // console.log("test", io.sockets.adapter.rooms.get(roomName));
   }
 
   function handleJoinGame(roomName) {
-    const room = io.sockets.adapter.rooms[roomName];
+    // const room = io.sockets.adapter.rooms[roomName];
+    // const room = io.sockets.adapter.rooms.get(roomName);
 
+    // console.log(roomName);
+
+    const room = io.sockets.adapter.rooms.has(roomName.value);
+
+    // console.log("array", Array.from(socket.rooms));
     let allUsers;
     if (room) {
-      allUsers = room.sockets;
+      // allUsers = room.sockets;
+      allUsers = Array.from(socket.rooms);
     }
+    console.log("room", room, "allUsers", allUsers);
 
     let numClients = 0;
     if (allUsers) {
@@ -59,22 +84,22 @@ io.on("connection", (client) => {
     }
 
     if (numClients === 0) {
-      client.emit("unknownGame");
+      socket.emit("unknownGame");
       return;
     } else if (numClients > 1) {
-      client.emit("tooManyPlayers");
+      socket.emit("tooManyPlayers");
       return;
     }
 
-    clientRooms[client.id] = roomName;
-    client.join(roomName);
-    client.number = 2;
-    client.emit("init", 2);
-    startGameInterval(roomName);
+    clientRooms[socket.id] = roomName.value;
+    socket.join(roomName.value);
+    socket.number = 2;
+    socket.emit("init", 2);
+    startGameInterval(roomName.value);
   }
 
   function handleKeyDown(keyCode) {
-    const roomName = clientRooms[client.id];
+    const roomName = clientRooms[socket.id];
     if (!roomName) {
       return;
     }
@@ -88,7 +113,7 @@ io.on("connection", (client) => {
     const vel = getUpdatedVelocity(keyCode);
 
     if (vel) {
-      state[roomName].players[client.number - 1].vel = vel;
+      state[roomName].players[socket.number - 1].vel = vel;
     }
   }
 });
@@ -96,6 +121,7 @@ io.on("connection", (client) => {
 function startGameInterval(roomName) {
   const intervalId = setInterval(() => {
     const winner = gameLoop(state[roomName]);
+    console.log(gameLoop(state[roomName]));
     // win check to see if there is a winner at specific interval of game
     if (!winner) {
       emitGameState(roomName, state[roomName]);
@@ -116,5 +142,9 @@ function emitGameOver(room, winner) {
   io.sockets.in(room).emit("gameOver", JSON.stringify({ winner }));
 }
 
-io.listen(process.env.PORT || 3000);
-app.listen(process.env.PORT || 3000);
+// io.listen(process.env.PORT || 3000);
+// app.listen(process.env.PORT || 3000);
+
+httpServer.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+});
