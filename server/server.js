@@ -16,8 +16,6 @@ const cors = require("cors");
 
 const httpServer = createServer(app);
 
-// const io = new Server(httpServer);
-
 const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:3000", // Change the cors origin to the link of deployed app when deployed
@@ -40,12 +38,6 @@ io.on("connection", (socket) => {
   socket.on("newGame", handleNewGame);
   socket.on("joinGame", handleJoinGame);
 
-  socket.on("testcall", handleTest);
-  function handleTest() {
-    console.log("servertest");
-    console.log(clientRooms);
-  }
-
   function handleNewGame() {
     let roomName = makeId(6);
 
@@ -57,26 +49,21 @@ io.on("connection", (socket) => {
     socket.join(roomName);
     socket.number = 1;
     socket.emit("init", 1);
-    // console.log(roomName);
-    console.log(clientRooms[socket.id]);
-    // console.log("test", io.sockets.adapter.rooms.get(roomName));
+
+    // console.log(clientRooms);
   }
 
   function handleJoinGame(roomName) {
     // const room = io.sockets.adapter.rooms[roomName];
-    // const room = io.sockets.adapter.rooms.get(roomName);
 
-    // console.log(roomName);
-
+    // boolean
     const room = io.sockets.adapter.rooms.has(roomName.value);
 
-    // console.log("array", Array.from(socket.rooms));
     let allUsers;
     if (room) {
       // allUsers = room.sockets;
       allUsers = Array.from(socket.rooms);
     }
-    console.log("room", room, "allUsers", allUsers);
 
     let numClients = 0;
     if (allUsers) {
@@ -121,7 +108,6 @@ io.on("connection", (socket) => {
 function startGameInterval(roomName) {
   const intervalId = setInterval(() => {
     const winner = gameLoop(state[roomName]);
-    console.log(gameLoop(state[roomName]));
     // win check to see if there is a winner at specific interval of game
     if (!winner) {
       emitGameState(roomName, state[roomName]);
@@ -141,9 +127,6 @@ function emitGameState(room, gameState) {
 function emitGameOver(room, winner) {
   io.sockets.in(room).emit("gameOver", JSON.stringify({ winner }));
 }
-
-// io.listen(process.env.PORT || 3000);
-// app.listen(process.env.PORT || 3000);
 
 httpServer.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

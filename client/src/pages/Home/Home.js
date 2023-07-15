@@ -28,27 +28,7 @@ function joinGame() {
   init();
 }
 
-function testRoom(msg) {
-  console.log("test called");
-  socket.emit("testcall");
-
-  // init();
-  // console.log(canvas, ctx);
-}
-
 const socket = io("http://localhost:3001/");
-
-// socket.on("initconnect", handleConnect);
-socket.on("test", handleTestCall);
-
-function handleTestCall(msg) {
-  socket.emit("testcall");
-}
-
-// function handleConnect(msg) {
-//   console.log("connection");
-//   console.log(msg);
-// }
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);
@@ -63,14 +43,7 @@ let gameActive = false;
 
 // init
 function init() {
-  // initialScreen.style.display = "none";
-  // gameScreen.style.display = "block";
-
-  // grabs canvas element by id
-  // canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
-  // console.log(canvas);
-  // console.log(ctx);
 
   // adjusts canvas width and height to be fixed
   canvas.width = canvas.height = 600;
@@ -115,8 +88,6 @@ function paintPlayer(playerState, size, color) {
     ctx.fillRect(cell.x * size, cell.y * size, size, size);
   }
 }
-
-// paintGame(gameState);
 
 function handleInit(number) {
   playerNumber = number;
@@ -242,16 +213,6 @@ export default function Home() {
                   }}
                 >
                   Join Game
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-success"
-                  id="testButton"
-                  onClick={() => {
-                    testRoom();
-                  }}
-                >
-                  Test rooms
                 </button>
               </div>
             </div>
