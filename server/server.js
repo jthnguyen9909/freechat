@@ -4,9 +4,14 @@ require("dotenv").config();
 const { initGame, gameLoop, getUpdatedVelocity } = require("./utils/game");
 const { FRAME_RATE } = require("./utils/constants");
 const { makeId } = require("./utils/utils");
+const routes = require("./controllers");
 
 const express = require("express");
 const path = require("path");
+const session = require("express-session");
+const sequelize = require("./config");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -24,9 +29,26 @@ const io = new Server(httpServer, {
 });
 
 app.use(express.static("public"));
+
+const sess = {
+  secret: "Super secret secret",
+  cookie: {
+    maxAge: 300000,
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
+  },
+  resave: false,
+  saveUninitialized: true,
+  store: new SequelizeStore({
+    db: sequelize,
+  }),
+};
+app.use(session(sess));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(routes);
 
 const state = {};
 const clientRooms = {};
@@ -128,6 +150,13 @@ function emitGameOver(room, winner) {
   io.sockets.in(room).emit("gameOver", JSON.stringify({ winner }));
 }
 
-httpServer.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
+// httpServer.listen(PORT, () => {
+//   console.log(`Server is listening on port ${PORT}`);
+// });
+
+sequelize
+  .sync()
+  .then(() =>
+    httpServer.listen(PORT, () => console.log("App listening on port 3001"))
+  )
+  .catch((err) => console.error(err));
