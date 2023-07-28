@@ -13,6 +13,7 @@ const sequelize = require("./config");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 const PORT = process.env.PORT || 3001;
+// const PORT = 3001;
 const app = express();
 
 const { createServer } = require("http");
@@ -23,7 +24,8 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000", // Change the cors origin to the link of deployed app when deployed
+    origin: "http://localhost:3000",
+    // Change the cors origin to the link of deployed app when deployed
     methods: ["GET", "POST"],
   },
 });
@@ -52,10 +54,46 @@ app.use(routes);
 
 const state = {};
 const clientRooms = {};
+const chatUsers = [];
 
 io.on("connection", (socket) => {
   // socket.emit("initconnect", { data: "hello world" });
 
+  // Global Chat Code
+  // to single client
+  socket.emit("message", "Hello World!");
+  // broadcast to everyone except the user
+  socket.on("userJoinMessage", (username) => {
+    console.log(username);
+    if (username) {
+      socket.broadcast.emit("joinMessage", `${username} has joined the chat!`);
+    }
+  });
+  // socket.broadcast.emit("joinMessage", "A user has joined the chat!");
+  // io.emit() goes to everyone including user
+
+  // runs when client disconnects
+  // socket.on("disconnect", () => {
+  //   io.emit("message", "A user has left the chat.");
+  // });
+
+  socket.on("userJoin", (username) => {
+    if (username && !chatUsers.includes(username)) {
+      chatUsers.push(username);
+
+      console.log(chatUsers);
+    }
+    io.emit("userUpdate", chatUsers);
+  });
+
+  // listen for chatMessage
+  socket.on("chatMessage", (msg) => {
+    // io.emit("message", msg);
+    // socket.broadcast.emit("message", msg);
+    io.emit("message", msg);
+  });
+
+  // snakeGame socket code
   socket.on("keydown", handleKeyDown);
   socket.on("newGame", handleNewGame);
   socket.on("joinGame", handleJoinGame);
@@ -157,6 +195,6 @@ function emitGameOver(room, winner) {
 sequelize
   .sync()
   .then(() =>
-    httpServer.listen(PORT, () => console.log("App listening on port 3001"))
+    httpServer.listen(PORT, () => console.log(`App listening on port ${PORT}`))
   )
   .catch((err) => console.error(err));

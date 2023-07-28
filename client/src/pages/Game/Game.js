@@ -1,5 +1,5 @@
-import SnakeGame from "../../components/snakeGame";
 import React, { useState } from "react";
+import style from "./game.module.css";
 const { io } = require("socket.io-client");
 
 const BG_COLOR = "#231f20";
@@ -179,7 +179,7 @@ export default function Game() {
                 <h1>Multiplayer Snake</h1>
                 <button
                   type="submit"
-                  className="btn btn-success"
+                  className={style.btn}
                   id="newGameButton"
                   onClick={() => {
                     hideScreen();
@@ -201,7 +201,7 @@ export default function Game() {
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-success"
+                  className={style.btn}
                   id="joinGameButton"
                   onClick={() => {
                     hideScreen();

@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+
+:root {
+  --dark-color-a: #004e89;
+  --dark-color-b: #1a659e;
+  --light-color: #e6e9ff;
+  --success-color: #5cb85c;
+  --error-color: #d9534f;
+}
+
+.btn {
+  cursor: pointer;
+  padding: 5px 15px;
+  background: var(--dark-color-a);
+  color: var(--light-color);
+  border: 0;
+  font-size: 17px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
