@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
   socket.emit("message", "Hello World!");
   // broadcast to everyone except the user
   socket.on("userJoinMessage", (username) => {
-    console.log(username);
+    // console.log(username);
     if (username) {
       socket.broadcast.emit("joinMessage", `${username} has joined the chat!`);
     }
@@ -78,17 +78,29 @@ io.on("connection", (socket) => {
   // });
 
   socket.on("userJoin", (username) => {
-    if (username && !chatUsers.includes(username)) {
-      chatUsers.push(username);
-
-      console.log(chatUsers);
+    if (username && isUsernameTaken(username)) {
+      socket.emit("usernameError", "Username is already online.");
+      console.log("username already online");
     }
+    if (username && !isUsernameTaken(username)) {
+      // push seems to be able to send data over to client, but not
+      // chatUsers[socket.id] = username;
+      let newUser = { socket_id: socket.id, username: username };
+      chatUsers.push(newUser);
+    } else {
+    }
+    console.log("chatusers", chatUsers);
     io.emit("userUpdate", chatUsers);
   });
 
+  // checks if username is already in online array
+  function isUsernameTaken(username) {
+    return chatUsers.some((user) => user.username === username);
+    // return Object.values(chatUsers).includes(username);
+  }
+
   // listen for chatMessage
   socket.on("chatMessage", (msg) => {
-    // io.emit("message", msg);
     // socket.broadcast.emit("message", msg);
     io.emit("message", msg);
   });

@@ -37,8 +37,8 @@ export default function ChatBox({ username }) {
 
   useEffect(() => {
     socket.on("userUpdate", (chatUsers) => {
-      setUsers(chatUsers);
-      console.log(users);
+      const arrayUsers = chatUsers.map((user) => user.username);
+      setUsers(arrayUsers);
     });
   }, [users]);
 
@@ -68,9 +68,19 @@ export default function ChatBox({ username }) {
     event.preventDefault();
 
     const msg = formState;
-
-    // emitting a message to server
-    socket.emit("chatMessage", msg);
+    if (username) {
+      // emitting a message to server
+      socket.emit("chatMessage", msg);
+    } else {
+      const loginMessage = (
+        <div className="message" key={Date.now()}>
+          <p className={style.loginMsg}>
+            Please login or sign up to begin chatting!
+          </p>
+        </div>
+      );
+      setMessages([...messages, loginMessage]);
+    }
   };
 
   return (
@@ -97,6 +107,7 @@ export default function ChatBox({ username }) {
               <li>Brad</li>
               <li>John</li>
               <li>Mary</li>
+              {!username ? <li>You (Anonymous)</li> : null}
               {users.map((user, index) => (
                 <li key={index}>{user}</li>
               ))}
@@ -131,6 +142,7 @@ export default function ChatBox({ username }) {
               <i className="fas fa-paper-plane"></i> Send
             </button>
           </form>
+          <button onClick={handleTest}>Test</button>
         </div>
       </div>
     </>

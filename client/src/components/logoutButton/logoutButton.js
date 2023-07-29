@@ -12,6 +12,7 @@ export default function LogoutButton() {
 
     if (response.ok) {
       navigate("/");
+      window.location.reload();
       console.log("logout success");
     } else {
       alert("Failed to log out");
