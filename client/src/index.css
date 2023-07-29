@@ -1,3 +1,14 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+
+:root {
+  --dark-color-a: #004e89;
+  --dark-color-b: #1a659e;
+  --light-color: #cde6f5;
+  --success-color: #5cb85c;
+  --error-color: #d9534f;
+}
+
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

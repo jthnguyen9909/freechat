@@ -61,10 +61,9 @@ io.on("connection", (socket) => {
 
   // Global Chat Code
   // to single client
-  socket.emit("message", "Hello World!");
+  socket.emit("message", "Welcome to ChatHub!");
   // broadcast to everyone except the user
   socket.on("userJoinMessage", (username) => {
-    // console.log(username);
     if (username) {
       socket.broadcast.emit("joinMessage", `${username} has joined the chat!`);
     }
@@ -73,14 +72,27 @@ io.on("connection", (socket) => {
   // io.emit() goes to everyone including user
 
   // runs when client disconnects
-  // socket.on("disconnect", () => {
-  //   io.emit("message", "A user has left the chat.");
-  // });
+  // not sure when this is fired or how many times
+  socket.on("disconnect", () => {
+    // io.emit("message", "A user has left the chat.");
+    removeUserBySocketId(chatUsers, socket.id);
+    io.emit("userUpdate", chatUsers);
+  });
+
+  function removeUserBySocketId(chatUsers, socketId) {
+    const indexToRemove = chatUsers.findIndex(
+      (user) => user.socket_id === socketId
+    );
+    if (indexToRemove !== -1) {
+      chatUsers.splice(indexToRemove, 1);
+      console.log("removed user", socket.id);
+    }
+  }
 
   socket.on("userJoin", (username) => {
     if (username && isUsernameTaken(username)) {
       socket.emit("usernameError", "Username is already online.");
-      console.log("username already online");
+      console.log(`${username} is already online`);
     }
     if (username && !isUsernameTaken(username)) {
       // push seems to be able to send data over to client, but not
@@ -89,7 +101,6 @@ io.on("connection", (socket) => {
       chatUsers.push(newUser);
     } else {
     }
-    console.log("chatusers", chatUsers);
     io.emit("userUpdate", chatUsers);
   });
 
@@ -100,9 +111,9 @@ io.on("connection", (socket) => {
   }
 
   // listen for chatMessage
-  socket.on("chatMessage", (msg) => {
+  socket.on("chatMessage", (msg, username) => {
     // socket.broadcast.emit("message", msg);
-    io.emit("message", msg);
+    io.emit("message", msg, username);
   });
 
   // snakeGame socket code
@@ -121,8 +132,6 @@ io.on("connection", (socket) => {
     socket.join(roomName);
     socket.number = 1;
     socket.emit("init", 1);
-
-    // console.log(clientRooms);
   }
 
   function handleJoinGame(roomName) {
@@ -199,10 +208,6 @@ function emitGameState(room, gameState) {
 function emitGameOver(room, winner) {
   io.sockets.in(room).emit("gameOver", JSON.stringify({ winner }));
 }
-
-// httpServer.listen(PORT, () => {
-//   console.log(`Server is listening on port ${PORT}`);
-// });
 
 sequelize
   .sync()

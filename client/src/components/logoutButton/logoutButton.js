@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import style from "./logoutButton.module.css";
 
 export default function LogoutButton() {
   const navigate = useNavigate();
@@ -21,7 +23,9 @@ export default function LogoutButton() {
 
   return (
     <>
-      <button onClick={handleLogout}>Logout</button>
+      <Link className={style.menuText} onClick={handleLogout}>
+        Logout
+      </Link>
     </>
   );
 }

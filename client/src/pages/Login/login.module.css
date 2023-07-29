@@ -1,111 +1,137 @@
-.loginContainer {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    margin-bottom: 8rem;
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  background: var(--light-color);
+  margin: 20px;
 }
 
-.loadText {
-    font-size: 2rem;
-    padding-top: 350px;
-    padding-bottom:350px;
+.btn {
+  cursor: pointer;
+  padding: 5px 15px;
+  background: var(--light-color);
+  color: var(--dark-color-a);
+  border: 0;
+  font-size: 17px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
 }
 
-.text {
-    width: 80%;
-    display: flex;
-    text-align: center;
-    margin-bottom: 2rem;
+/* Chat Box for login/signup */
+
+.chatContainer {
+  max-width: 1100px;
+  height: 666px;
+  background: #fff;
+  margin: 30px auto;
+  overflow: hidden;
 }
+
+.chatHeader {
+  background: var(--dark-color-a);
+  color: #fff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chatMain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+}
+
+.footer {
+  padding: 40px 30px;
+  background-color: var(--dark-color-a);
+}
+
+.loginMsg {
+  color: red;
+}
+
+.menuText {
+  color: #777;
+}
+
+a {
+	color:white;
+}
+
+
 
 .formContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-    width: 100%;
-    padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  padding: 0 2rem;
 }
 
 .inputField {
-    border: 1px black solid;
-    width: 100%;
-    padding: 1rem;
-}
-
-.btnContainer {
-    width: 24rem;
-    padding: 0 2rem;
-}
-
-.loginBtn {
-    background-color: var(--primary-blue);
-    height: 3rem;
-}
-
-.signUpBtn {
-    background-color: var(--secondary-brown);
-    height: 3rem;
+  border: 1px black solid;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
 }
 
 .alternativeOptionSection {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .altEl {
-    height: 100%;
-    display: flex;
-    align-items: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
-.altBtn {
-    border: 1px solid #7DF9FF;
-    border-radius: 8px;
-    color: black;
-    width: 8rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.altBtn:hover {
-    background-color: #7DF9FF;
+@media (max-width: 700px) {
+  .chatMain {
+    display: block;
+  }
 }
 
 @media (min-width: 960px) {
-    .container {
-        margin-top: 4rem;
-    }
+  .container {
+    margin-top: 4rem;
+  }
 
-    .text {
-        width: 24rem;
-    }
+  .text {
+    width: 24rem;
+  }
 
-    .formContainer {
-        width: 50%;
-        padding: 0;
-    }
+  .formContainer {
+    width: 50%;
+    padding: 0;
+  }
 
-    .inputField {
-        width: 50%;
-    }
+  .inputField {
+    width: 50%;
+  }
 
-    .btnContainer {
-        padding: 0;
-    }
+  .btnContainer {
+    padding: 0;
+  }
 }

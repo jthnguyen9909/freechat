@@ -14,11 +14,6 @@ function App() {
     setSessionUser(data.username);
   }, []);
 
-  function handleClick() {
-    console.log(sessionData.username);
-    console.log(sessionUser);
-  }
-
   return (
     <>
       <Router>
@@ -26,20 +21,12 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={
-                <Home
-                  onHome={handleLoginData}
-                  username={sessionUser}
-                  // session={sessionUser}
-                />
-              }
+              element={<Home onHome={handleLoginData} username={sessionUser} />}
             />
             <Route path="/game" element={<Game />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Routes>
-
-          <button onClick={handleClick}>test</button>
         </div>
       </Router>
     </>
