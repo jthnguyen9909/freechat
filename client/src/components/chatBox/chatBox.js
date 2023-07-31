@@ -11,6 +11,8 @@ import Menu from "@mui/material/Menu";
 
 const { io } = require("socket.io-client");
 const socket = io("http://localhost:3000/");
+const Filter = require("bad-words");
+const filter = new Filter();
 
 export default function ChatBox({ username }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -113,7 +115,18 @@ export default function ChatBox({ username }) {
   // submit message
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    const msg = formState;
+    // censors profanity, but messages still sent
+    const msg = filter.clean(formState);
+    // completely disallows messages with profanity from being sent
+    // if (filter.isProfane(msg)) {
+    //   const profanityMessage = (
+    //     <div className={style.message} key={Date.now()}>
+    //       <p className={style.loginMsg}>Profanity is not allowed.</p>
+    //     </div>
+    //   );
+    //   setMessages([...messages, profanityMessage]);
+    //   return;
+    // }
     if (username) {
       // check if user runs the whisper command; if so, split username and message content
       if (msg.startsWith("/w ")) {

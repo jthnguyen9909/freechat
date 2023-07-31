@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
+const Filter = require("bad-words");
 const sequelize = require("../config");
 
 class User extends Model {
@@ -22,6 +23,12 @@ User.init(
       validate: {
         isAlphanumeric: true,
         notIn: [["admin", "root", "server"]],
+        checkForProfanity(value) {
+          const filter = new Filter();
+          if (filter.isProfane(value)) {
+            throw new Error("Profanity is not allowed.");
+          }
+        },
       },
     },
     password: {

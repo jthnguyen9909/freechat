@@ -7,10 +7,10 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 
 function App() {
-  const [sessionData, setSessionData] = useState(null);
+  // const [sessionData, setSessionData] = useState(null);
   const [sessionUser, setSessionUser] = useState(null);
   const handleLoginData = useCallback((data) => {
-    setSessionData(data);
+    // setSessionData(data);
     setSessionUser(data.username);
   }, []);
 
