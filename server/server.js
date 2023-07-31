@@ -116,6 +116,23 @@ io.on("connection", (socket) => {
     io.emit("message", msg, username);
   });
 
+  socket.on("whisperMessage", (whisperRecipient, whisperContent, username) => {
+    console.log(`whisper recieved for ${whisperRecipient}, ${whisperContent}`);
+    const foundUser = chatUsers.find(
+      (user) => user.username === whisperRecipient
+    );
+    if (foundUser) {
+      io.to(foundUser.socket_id).emit(
+        "whisperReceive",
+        whisperContent,
+        username
+      );
+    } else {
+      console.log(`User ${whisperRecipient} not found`);
+      socket.emit("whisperError", `User ${whisperRecipient} not found!`);
+    }
+  });
+
   // snakeGame socket code
   socket.on("keydown", handleKeyDown);
   socket.on("newGame", handleNewGame);

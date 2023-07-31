@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
 
 :root {
   --dark-color-a: #004e89;
@@ -6,6 +8,7 @@
   --light-color: #cde6f5;
   --success-color: #5cb85c;
   --error-color: #d9534f;
+  --server-msg-color: #ffee00;
 }
 
 

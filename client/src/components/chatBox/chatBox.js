@@ -1,6 +1,6 @@
 import style from "./chatBox.module.css";
 import { Link } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import LogoutButton from "../logoutButton";
 import { format } from "date-fns";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
@@ -14,6 +14,7 @@ const socket = io("http://localhost:3000/");
 
 export default function ChatBox({ username }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const inputRef = useRef(null);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -23,13 +24,30 @@ export default function ChatBox({ username }) {
     setAnchorEl(null);
   };
 
-  const [formState, setFormState] = useState({});
+  const [formState, setFormState] = useState("");
 
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
 
   socket.on("message", (message, user) => {
     serverMessage(message, user);
+  });
+
+  socket.on("whisperReceive", (message, user) => {
+    console.log("received whisper");
+    whisperMessage(message, user);
+  });
+
+  socket.on("whisperError", (message) => {
+    const whisperErrorMessage = (
+      <div className={style.message} key={Date.now()}>
+        <p className={style.meta}>
+          {formattedTime} <span className={style.serverMsg}>Server</span>
+        </p>
+        <p className={style.loginMsg}>{message}</p>
+      </div>
+    );
+    setMessages([...messages, whisperErrorMessage]);
   });
 
   // keeps running twice, WIP
@@ -50,6 +68,14 @@ export default function ChatBox({ username }) {
     });
   }, [users]);
 
+  const handleWhisper = (e) => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+    setFormState(`/w ${e.target.innerHTML} `);
+    inputRef.current.focus();
+  };
+
   const getCurrentFormattedDate = () => {
     const currentDate = new Date();
     const formattedTime = format(currentDate, "hh:mm a");
@@ -57,10 +83,22 @@ export default function ChatBox({ username }) {
   };
   const formattedTime = getCurrentFormattedDate();
 
+  const whisperMessage = (message, user) => {
+    const newMessage = (
+      <div className={style.message} key={Date.now()}>
+        <p className={style.meta}>
+          {formattedTime} <span>{user}</span>
+        </p>
+        <p className={style.whisper}>{message}</p>
+      </div>
+    );
+    setMessages([...messages, newMessage]);
+  };
+
   const serverMessage = (message, user) => {
     const newMessage = (
-      <div className="message" key={Date.now()}>
-        <p className="meta">
+      <div className={style.message} key={Date.now()}>
+        <p className={style.meta}>
           {formattedTime} <span>{user}</span>
         </p>
         <p className="text">{message}</p>
@@ -76,14 +114,30 @@ export default function ChatBox({ username }) {
   // submit message
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
     const msg = formState;
     if (username) {
-      // emitting a message to server
-      socket.emit("chatMessage", msg, username);
+      // check if user runs the whisper command; if so, split username and message content
+      if (msg.startsWith("/w ")) {
+        const whisperMessage = msg.slice(3);
+        const [username, ...messageParts] = whisperMessage.split(" ");
+        const whisperRecipient = username.trim();
+        const whisperContent = messageParts.join(" ").trim();
+        socket.emit(
+          "whisperMessage",
+          whisperRecipient,
+          whisperContent,
+          username
+        );
+        setFormState(`/w ${whisperRecipient} `);
+      } else {
+        // emitting a message to server if not whisper
+        socket.emit("chatMessage", msg, username);
+        setFormState("");
+      }
     } else {
+      // give error message to login if not logged in
       const loginMessage = (
-        <div className="message" key={Date.now()}>
+        <div className={style.message} key={Date.now()}>
           <p className={style.loginMsg}>
             Please login or sign up to begin chatting!
           </p>
@@ -98,7 +152,7 @@ export default function ChatBox({ username }) {
       <div className={style.chatContainer}>
         <header className={style.chatHeader}>
           <h1>
-            <Link to="/">ChatHub</Link>
+            <Link to="/">FreeChat</Link>
           </h1>
           <div>
             <IconButton
@@ -158,25 +212,33 @@ export default function ChatBox({ username }) {
           <div className={style.chatSidebar}>
             <h3>Users</h3>
             <ul id="users">
-              <li>Brad</li>
-              <li>John</li>
-              <li>Mary</li>
+              {/* <li className={style.user} onClick={handleWhisper}>
+                Brad
+              </li>
+              <li className={style.user} onClick={handleWhisper}>
+                John
+              </li>
+              <li className={style.user} onClick={handleWhisper}>
+                Mary
+              </li> */}
               {!username ? <li>You (Anonymous)</li> : null}
               {users.map((user, index) => (
-                <li key={index}>{user}</li>
+                <li className={style.user} onClick={handleWhisper} key={index}>
+                  {user}
+                </li>
               ))}
             </ul>
           </div>
           <div className={style.chatMessages}>
-            <div className="message">
-              <p className="meta">
+            {/* <div className={style.message}>
+              <p className={style.meta}>
                 9:15 PM <span>Mary</span>
               </p>
               <p className="text">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Eligendi, repudiandae.
               </p>
-            </div>
+            </div> */}
             <div>{messages}</div>
           </div>
         </main>
@@ -188,8 +250,9 @@ export default function ChatBox({ username }) {
               placeholder="Enter Message"
               required
               autoComplete="off"
-              value={formState.username}
+              value={formState}
               onChange={handleInputChange}
+              ref={inputRef}
             />
             <button className="btn">
               <SendRoundedIcon className={style.sendIcon} />
