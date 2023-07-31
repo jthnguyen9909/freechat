@@ -36,6 +36,7 @@ export default function ChatBox({ username }) {
   });
 
   socket.on("whisperReceive", (message, user) => {
+    whisperSent(message, user);
     whisperMessage(message, user);
   });
 
@@ -84,11 +85,23 @@ export default function ChatBox({ username }) {
   };
   const formattedTime = getCurrentFormattedDate();
 
+  const whisperSent = (message, user) => {
+    const newMessage = (
+      <div className={style.message} key={Date.now()}>
+        <p className={style.meta}>
+          {formattedTime} <span>You to {user}</span>
+        </p>
+        <p className={style.whisper}>{message}</p>
+      </div>
+    );
+    setMessages([...messages, newMessage]);
+  };
+
   const whisperMessage = (message, user) => {
     const newMessage = (
       <div className={style.message} key={Date.now()}>
         <p className={style.meta}>
-          {formattedTime} <span>{user}</span>
+          {formattedTime} <span>{user} to You</span>
         </p>
         <p className={style.whisper}>{message}</p>
       </div>
