@@ -52,6 +52,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(routes);
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(join(__dirname, "..", "client", "build")));
+}
+
+app.get("/", (req, res) => {
+  res.sendFile(join(__dirname, "client", "build", "index.html"));
+});
+
 const state = {};
 const clientRooms = {};
 const chatUsers = [];
