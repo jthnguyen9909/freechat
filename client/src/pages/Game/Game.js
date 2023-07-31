@@ -26,7 +26,7 @@ function joinGame() {
   init();
 }
 
-const socket = io("http://localhost:3001/");
+const socket = io("https://lit-dawn-31381-c68ed5d010dd.herokuapp.com/");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState);

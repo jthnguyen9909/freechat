@@ -10,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 
 const { io } = require("socket.io-client");
-const socket = io("http://localhost:3000/");
+const socket = io("https://lit-dawn-31381-c68ed5d010dd.herokuapp.com/");
 const Filter = require("bad-words");
 const filter = new Filter();
 

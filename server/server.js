@@ -24,7 +24,7 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://lit-dawn-31381-c68ed5d010dd.herokuapp.com/",
     // Change the cors origin to the link of deployed app when deployed
     methods: ["GET", "POST"],
   },
