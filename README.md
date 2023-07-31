@@ -22,23 +22,23 @@ Create a free account and get started today!
 
 ## User Stories
 
-- User is able to chat with other users by sending and receiving messages in real-time
-- User can create an account and login to be identified by their username
-- User can whisper to other users
-- User can see who is currently logged in with the users list
+* User is able to chat with other users by sending and receiving messages in real-time
+* User can create an account and login to be identified by their username
+* User can whisper to other users
+* User can see who is currently logged in with the users list
 
 ## Technologies Used
 
-- [x] JavaScript (ES6+)
-- [x] React.js
-- [x] Node.js
-- [x] Express.js
-- [x] MySQL2
-- [x] Sequelize
-- [x] Socket.io
-- [x] MaterialUI
-- [x] Bootstrap
-- [x] Deployed on Heroku
+* [x] JavaScript (ES6+)
+* [x] React.js
+* [x] Node.js
+* [x] Express.js
+* [x] MySQL2
+* [x] Sequelize
+* [x] Socket.io
+* [x] MaterialUI
+* [x] Bootstrap
+* [x] Deployed on Heroku
 
 ## Usage
 
