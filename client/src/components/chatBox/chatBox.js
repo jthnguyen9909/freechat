@@ -144,8 +144,8 @@ export default function ChatBox({ username }) {
       // check if user runs the whisper command; if so, split username and message content
       if (msg.startsWith("/w ")) {
         const whisperMessage = msg.slice(3);
-        const [username, ...messageParts] = whisperMessage.split(" ");
-        const whisperRecipient = username.trim();
+        const [userRecipient, ...messageParts] = whisperMessage.split(" ");
+        const whisperRecipient = userRecipient.trim();
         const whisperContent = messageParts.join(" ").trim();
         socket.emit(
           "whisperMessage",
