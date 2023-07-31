@@ -2,13 +2,12 @@
 
 ![Screenshot of web app](./client/src/assets/images/freechat.png)
 [FreeChat Link](https://lit-dawn-31381-c68ed5d010dd.herokuapp.com/)
+
 ## Description
 
-This MERN stack web app lets users browse a wide selection of delicious milk tea businesses where they can view information about specific Milk Tea stores.
+This is a socket.io chatting web application that allows users to send and receive messages from others to communicate in real-time.
 
-Users are able to view store reviews and can also leave their own reviews. Users can add different businesses to their favorites list as well.
-
-Create a free account and get started today!
+After creating an account, users will be able to join a global chatroom and communicate freely with others, or specifically choose someone to send whispers to.
 
 ## Table of Contents
 
@@ -50,7 +49,7 @@ When logged in, the user will be able to see their username added to the user li
 
 The whisper command can also be easily accessed by selecting a user from the online user list, which will automatically input the "/w [username] " portion of the command.
 
-More features are yet to be implemented, such as message history and mini-game functionality.
+More features are yet to be implemented, such as message history, topic rooms, and mini-game functionality.
 
 ## Questions
 
