@@ -34,7 +34,6 @@ export default function ChatBox({ username }) {
   });
 
   socket.on("whisperReceive", (message, user) => {
-    console.log("received whisper");
     whisperMessage(message, user);
   });
 

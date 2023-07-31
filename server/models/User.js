@@ -21,6 +21,7 @@ User.init(
       allowNull: false,
       validate: {
         isAlphanumeric: true,
+        notIn: [["admin", "root", "server"]],
       },
     },
     password: {
