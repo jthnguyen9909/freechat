@@ -50,9 +50,7 @@ export default function Login({ username }) {
       alert("Failed to login");
     }
   };
-  const handleTest = () => {
-    console.log(username);
-  };
+
   return (
     <>
       <div className={style.chatContainer}>
@@ -92,14 +90,6 @@ export default function Login({ username }) {
                     Home
                   </Link>
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <Link className={style.menuText} to="signup">
-                    Sign Up
-                  </Link>
-                </MenuItem>{" "}
-                <MenuItem onClick={handleClose}>
-                  <LogoutButton>Logout</LogoutButton>
-                </MenuItem>
               </div>
             </Menu>
           </div>
@@ -137,9 +127,6 @@ export default function Login({ username }) {
             </div>
           </form>
         </main>
-        <div className={style.footer}>
-          <button onClick={handleTest}>test</button>
-        </div>
       </div>
     </>
   );

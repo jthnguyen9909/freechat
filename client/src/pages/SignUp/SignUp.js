@@ -86,14 +86,6 @@ export default function SignUp({ username }) {
                     Home
                   </Link>
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <Link className={style.menuText} to="login">
-                    Login
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <LogoutButton>Logout</LogoutButton>
-                </MenuItem>
               </div>
             </Menu>
           </div>
