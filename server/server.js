@@ -94,14 +94,12 @@ io.on("connection", (socket) => {
     );
     if (indexToRemove !== -1) {
       chatUsers.splice(indexToRemove, 1);
-      console.log("removed user", socket.id);
     }
   }
 
   socket.on("userJoin", (username) => {
     if (username && isUsernameTaken(username)) {
       socket.emit("usernameError", "Username is already online.");
-      console.log(`${username} is already online`);
     }
     if (username && !isUsernameTaken(username)) {
       // push seems to be able to send data over to client, but not
@@ -126,7 +124,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("whisperMessage", (whisperRecipient, whisperContent, username) => {
-    console.log(`whisper recieved for ${whisperRecipient}, ${whisperContent}`);
     const foundUser = chatUsers.find(
       (user) => user.username === whisperRecipient
     );
@@ -137,7 +134,6 @@ io.on("connection", (socket) => {
         username
       );
     } else {
-      console.log(`User ${whisperRecipient} not found`);
       socket.emit("whisperError", `User ${whisperRecipient} not found!`);
     }
   });
