@@ -1,6 +1,6 @@
 # FreeChat
 
-![Screenshot of web app](./client/src/assets/images/freechat.png)
+![Screenshot of web app](./client/src/assets/images/freechatsc.png)
 [FreeChat Link](https://lit-dawn-31381-c68ed5d010dd.herokuapp.com/)
 
 ## Description
