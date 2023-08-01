@@ -127,8 +127,7 @@ export default function Login({ username }) {
             </div>
           </form>
         </main>
-        <div className={style.footer}>
-        </div>
+        <div className={style.footer}></div>
       </div>
     </>
   );

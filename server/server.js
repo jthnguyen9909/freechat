@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
 
   // Global Chat Code
   // to single client
-  socket.emit("message", "Welcome to ChatHub!");
+  socket.emit("message", "Welcome to FreeChat!");
   // broadcast to everyone except the user
   socket.on("userJoinMessage", (username) => {
     if (username) {
